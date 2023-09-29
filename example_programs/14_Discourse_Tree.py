@@ -20,7 +20,7 @@ def discourse_operation_and_draw_tree(sentence):
     tree.pretty_print()
 
 # Example sentence
-sentence = "Natural language processing is a subfield of artificial intelligence. It deals with the interaction between computers and human language."
+sentence = "Don't piss in my garden and tell me you're trying to help my plants grow.We're careful about orange ping pong balls because people might think they're fruit."
 
 # Perform discourse operation and draw the tree
 discourse_operation_and_draw_tree(sentence)
