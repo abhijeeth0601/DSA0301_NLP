@@ -1,0 +1,458 @@
+{\rtf1\ansi\ansicpg1252\deff0\nouicompat\deflang2057{\fonttbl{\f0\fnil\fcharset0 Calibri;}}
+{\*\generator Riched20 10.0.22621}\viewkind4\uc1 
+\pard\sa200\sl276\slmult1\b\f0\fs22\lang9 1.Implement a Python program that defines a finite state automaton to recognize strings with an equal number of '0's and 'I's.\par
+\b0\par
+def fsa(string):\par
+    state=0\par
+    for char in string:\par
+        if char=='0':\par
+            state=(state+1)%2\par
+        elif char=='1':\par
+            state=(state-1)%2\par
+    return state==0\par
+strings_to_test=["0011","0101","000111","101010","1100","10101"]\par
+for s in strings_to_test:\par
+    result=fsa(s)\par
+    print(f"string'\{s\}' is accepeted:\{result\}")\par
+        \par
+\b 2. Write a Python program using the SpaCy library to perform Named Entity Recognition for classifying named entities in text, on a given sentence "Barack Obama was the 44th President of the United States, and he was born in Honolulu, Hawaii".\par
+\b0 import spacy\par
+nlp=spacy.load("en_core_web_sm")\par
+text="Barack obama was the 44th president of the united states, and he was born in Hanolulu,Hawaii."\par
+doc=nlp(text)\par
+for ent in doc.ents:\par
+    print(f"Entity:\{ent.text\},Label:\{ent.label_\}")\par
+\b 3.Implement a Python-based named entity disambiguation program that resolves entity mentions to their corresponding Wikipedia entities using wikipediaapi. Use the following input sentences "Apple is a leading tech company.".\par
+"I love apples as a fruit.",\par
+"Python is a popular programming language.",\par
+"The python is a non-venomous snake."\par
+\b0 import wikipediaapi\par
+import re\par
+import requests\par
+def disambiguate_entities(sentence):\par
+    user_agent = "Your-User-Agent-Name/1.0 (your@email.com)"\par
+    entity_mentions = re.findall(r'\\b\\w+\\b', sentence)\par
+    resolved_entities = \{\}\par
+    for mention in entity_mentions:\par
+        headers = \{'User-Agent': user_agent\}\par
+        url = f'https://en.wikipedia.org/wiki/\{mention\}'\par
+        response = requests.get(url, headers=headers)\par
+        if response.status_code == 200:\par
+            resolved_entities[mention] = response.url.split('/')[-1]\par
+        else:\par
+            resolved_entities[mention] = None\par
+    return resolved_entities\par
+sentence1 = "Apple is a leading tech company."\par
+sentence2 = "I love apples is a fruit."\par
+sentence3 = "Python is a popular programming language."\par
+sentence4 = "The python is a non-venemous snake."\par
+result1 = disambiguate_entities(sentence1)\par
+print("Entities in sentence 1:", result1)\par
+result2 = disambiguate_entities(sentence2)\par
+print("Entities in sentence 2:", result2)\par
+result3 = disambiguate_entities(sentence3)\par
+print("Entities in sentence 3:", result3)\par
+result4 = disambiguate_entities(sentence4)\par
+print("Entities in sentence 4:", result4)\b\par
+\par
+4. Develop a Python program that evaluates the coherence of a provided sample text Once upon a time, there was a young boy named Peter.\par
+He lived in a small village.\par
+One day, he decided to explore the nearby forest."""\par
+\b0 import spacy\par
+def calculate_coherence(text):\par
+    nlp = spacy.load("en_core_web_sm")\par
+    doc = nlp(text)\par
+    sentence_roots = [(sent, sent.root) for sent in doc.sents]\par
+    coherence_score = 2.0\par
+    for i in range(len(sentence_roots) - 1):\par
+        root1 = sentence_roots[i][1].lemma_\par
+        root2 = sentence_roots[i + 1][1].lemma_\par
+        similarity = 1.0 if root1 == root2 else 0.0\par
+        coherence_score += similarity\par
+    coherence_score /= max(len(sentence_roots) - 1, 1)\par
+    return coherence_score\par
+sample_text = """\par
+Once upon a time, there was a young boy named Peter.\par
+He lived in a small village.\par
+One day, he decided to explore the nearby forest."""\par
+coherence_score = calculate_coherence(sample_text)\par
+print(f"Coherence score for the sample text: \{coherence_score:.2f\}")\par
+\b 5.Write a Python program that uses the NLTK library to perform morphological analysis on sentence "Unhappily, she ran quickly". \par
+\b0 import nltk\par
+from nltk.tokenize import word_tokenize\par
+from nltk import pos_tag\par
+nltk.download('punkt')\par
+nltk.download('averaged_perceptron_tagger')\par
+sentence = "Unhappily, she ran quickly"\par
+# Tokenize the sentence into words\par
+words = word_tokenize(sentence)\par
+# Perform part-of-speech tagging\par
+pos_tags = pos_tag(words)\par
+print("Tokenized words:", words)\par
+print("Part-of-speech tags:", pos_tags)\b\par
+6.Develop a program for sentiment analysis (positive, negative, or neutral) using textblob library, (e.g., using a pre-trained model or building a custom model), to the sentences "I love this product! It's amazing.", "The weather is terrible today.".\par
+\b0 from textblob import TextBlob\par
+\par
+# Sentences to analyze\par
+sentences = [\par
+    "I love this product! It's amazing.",\par
+    "The weather is terrible today."\par
+]\par
+\par
+for sentence in sentences:\par
+    analysis = TextBlob(sentence)\par
+    sentiment = analysis.sentiment.polarity\par
+\par
+    # Classify sentiment based on polarity\par
+    if sentiment > 0:\par
+        print(f'Sentence: "\{sentence\}"')\par
+        print("Sentiment: Positive")\par
+    elif sentiment < 0:\par
+        print(f'Sentence: "\{sentence\}"')\par
+        print("Sentiment: Negative")\par
+    else:\par
+        print(f'Sentence: "\{sentence\}"')\par
+        print("Sentiment: Neutral")\par
+\b 7. Write a Python program that demonstrates how to use regular expressions to validate and extract email addresses from a given text.\par
+\b0 import re\par
+def extract_emails(text):\par
+    # Regular expression pattern for matching email addresses\par
+    pattern = r'\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]\{2,\}\\b'\par
+    # Using re.findall to extract email addresses matching the pattern\par
+    emails = re.findall(pattern, text)\par
+    return emails\par
+def validate_email(email):\par
+    # Regular expression pattern for validating email addresses\par
+    pattern = r'\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]\{2,\}\\b'\par
+    # Using re.fullmatch to validate the email format\par
+    if re.fullmatch(pattern, email):\par
+        return True\par
+    else:\par
+        return False\par
+# Example text containing email addresses\par
+text_with_emails = "Sample text with emails: john@example.com, jane.doe@email.co.uk, invalid_email@"\par
+# Extracting emails from the text\par
+extracted_emails = extract_emails(text_with_emails)\par
+print("Extracted emails:", extracted_emails)\par
+# Validating extracted emails\par
+for email in extracted_emails:\par
+    if validate_email(email):\par
+        print(f"Valid email: \{email\}")\par
+    else:\par
+        print(f"Invalid email: \{email\}")\b\par
+8. Implement a text classification program using the Naive Bayes algorithm to classify text documents into categories (e.g., spam detection).\par
+\b0 import nltk\par
+from sklearn.model_selection import train_test_split\par
+from sklearn.feature_extraction.text import CountVectorizer\par
+from sklearn.naive_bayes import MultinomialNB\par
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix\par
+# Sample data (replace this with your own dataset)\par
+# For demonstration, we're creating two lists - one with text messages and another with their corresponding labels (0 for ham, 1 for spam)\par
+text_messages = [\par
+    'Free entry to win a prize!',\par
+    'Hey, how are you?',\par
+    'Get free money now!',\par
+    'Meet me tomorrow at the usual place.',\par
+    'URGENT: You have won a cash prize!',\par
+]\par
+labels = [1, 0, 1, 0, 1]  # 1 for spam, 0 for ham (non-spam)\par
+# Split data into training and testing sets\par
+X_train, X_test, y_train, y_test = train_test_split(text_messages, labels, test_size=0.2, random_state=42)\par
+# Text preprocessing and feature extraction using CountVectorizer\par
+vectorizer = CountVectorizer()\par
+X_train_counts = vectorizer.fit_transform(X_train)\par
+X_test_counts = vectorizer.transform(X_test)\par
+# Naive Bayes classifier\par
+nb_classifier = MultinomialNB()\par
+nb_classifier.fit(X_train_counts, y_train)\par
+# Predictions\par
+y_pred = nb_classifier.predict(X_test_counts)\par
+# Evaluation\par
+accuracy = accuracy_score(y_test, y_pred)\par
+print(f"Accuracy: \{accuracy:.2f\}")\par
+print("\\nConfusion Matrix:")\par
+print(confusion_matrix(y_test, y_pred))\par
+print("\\nClassification Report:")\par
+print(classification_report(y_test, y_pred))\par
+\b 9.Create a Python program to identify and extract key phrases or keywords from a given text using techniques such as TF-IDF. The sentences-[\par
+"Artificial intelligence (AI) is a field of computer science.".\par
+"Machine learning is a subset of AI that focuses on training models to make predictions.",\par
+"Deep learning is a type of machine learning that uses neural networks with multiple layers.",\par
+"Neural networks are composed of interconnected nodes called neurons.",\par
+"Recurrent neural networks (RNNs) are commonly used in natural language processing tasks.".]\par
+\b0 from sklearn.feature_extraction.text import TfidfVectorizer\par
+# Sentences to analyze\par
+sentences = [\par
+    "Artificial intelligence (AI) is a field of computer science.",\par
+    "Machine learning is a subset of AI that focuses on training models to make predictions.",\par
+    "Deep learning is a type of machine learning that uses neural networks with multiple layers.",\par
+    "Neural networks are composed of interconnected nodes called neurons.",\par
+    "Recurrent neural networks (RNNs) are commonly used in natural language processing tasks."\par
+]\par
+# Initialize TF-IDF Vectorizer\par
+vectorizer = TfidfVectorizer(stop_words='english')\par
+# Fit and transform the sentences\par
+tfidf_matrix = vectorizer.fit_transform(sentences)\par
+# Get feature names (words) and their respective TF-IDF scores\par
+feature_names = vectorizer.get_feature_names_out()\par
+scores = tfidf_matrix.toarray()\par
+# Extract top keywords from each sentence based on TF-IDF scores\par
+for i, sentence in enumerate(sentences):\par
+    print(f"Keywords for Sentence \{i + 1\}: \{sentence\}")\par
+    sentence_scores = [(feature_names[j], scores[i][j]) for j in range(len(feature_names))]\par
+    # Sort the words by their TF-IDF scores in descending order\par
+    sorted_scores = sorted(sentence_scores, key=lambda x: x[1], reverse=True)\par
+    # Display top keywords with their respective TF-IDF scores\par
+    top_keywords = ", ".join([word for word, score in sorted_scores[:5]])  # Extract top 5 keywords\par
+    print(f"Top Keywords: \{top_keywords\}\\n")\b\par
+\par
+10. Write a Python program that utilizes NLTK's named entity recognition to extract named entities (e.g., person names, locations) from a given text. Write a Python program that performs reference resolution within a given text "Harvard University, located in Cambridge, Massachusetts, is a prestigious institution.".\par
+\b0 import nltk\par
+# Download NLTK resources if not already downloaded\par
+nltk.download('punkt')\par
+nltk.download('averaged_perceptron_tagger')\par
+nltk.download('maxent_ne_chunker')\par
+nltk.download('words')\par
+# Function to perform named entity recognition (NER)\par
+def extract_named_entities(text):\par
+    sentences = nltk.sent_tokenize(text)\par
+    tokenized_sentences = [nltk.word_tokenize(sentence) for sentence in sentences]\par
+    tagged_sentences = [nltk.pos_tag(sentence) for sentence in tokenized_sentences]\par
+    named_entities = nltk.ne_chunk_sents(tagged_sentences, binary=False)\par
+    # Extract named entities\par
+    for entities in named_entities:\par
+        for entity in entities:\par
+            if isinstance(entity, nltk.tree.Tree):\par
+                print(f"Named Entity: \{' '.join([word[0] for word in entity])\} - Type: \{entity.label()\}")\par
+# Given text\par
+given_text = "Harvard University, located in Cambridge, Massachusetts, is a prestigious institution."\par
+# Extract named entities from the text\par
+print("Named Entities:")\par
+extract_named_entities(given_text)\par
+\b 11.Create a Python program that demonstrates stochastic part-of-speech tagging for the given sentences "The red car stopped at the traffic light", "She quickly ran to catch the bus". \par
+\b0 import nltk\par
+import random\par
+# Sentences to tag\par
+sentences = [\par
+    "The red car stopped at the traffic light.",\par
+    "She quickly ran to catch the bus."\par
+]\par
+# Tokenize the sentences\par
+tokenized_sentences = [nltk.word_tokenize(sentence) for sentence in sentences]\par
+# Create a list of tagged words using a stochastic POS tagger (randomly assigning POS tags)\par
+def stochastic_pos_tag(sentence_tokens):\par
+    tagged_sentence = []\par
+    pos_tags = ['NN', 'VB', 'JJ', 'RB', 'IN', 'DT']  # Sample POS tags (Noun, Verb, Adjective, Adverb, Preposition, Determiner)\par
+    for token in sentence_tokens:\par
+        random_tag = random.choice(pos_tags)  # Randomly assign a POS tag\par
+        tagged_sentence.append((token, random_tag))\par
+    return tagged_sentence\par
+# Tag each sentence with stochastic POS tagging\par
+for i, sentence_tokens in enumerate(tokenized_sentences):\par
+    tagged_sentence = stochastic_pos_tag(sentence_tokens)\par
+    print(f"Sentence \{i + 1\} (Stochastic POS tagging):")\par
+    print(tagged_sentence)\par
+    print()\b\par
+12. Create a Python program for abstractive text summarization, a more advanced technique that generates summaries by rewriting the content in a human-readable form. Compose using following sentence "The World Health Organization (WHO) plays a vital role in global health. WHO is headquartered in Geneva, Switzerland, and it is responsible for coordinating international efforts to control and prevent the spread of diseases? Its mission is to promote and protect the health of people worldwide\par
+\b0 import nltk\par
+from nltk.tokenize import sent_tokenize, word_tokenize\par
+from nltk.corpus import stopwords\par
+from collections import defaultdict\par
+# Text to summarize\par
+input_text = (\par
+    "The World Health Organization (WHO) plays a vital role in global health. "\par
+    "WHO is headquartered in Geneva, Switzerland, and it is responsible for "\par
+    "coordinating international efforts to control and prevent the spread of diseases. "\par
+    "Its mission is to promote and protect the health of people worldwide."\par
+)\par
+# Tokenize text into sentences and words\par
+sentences = sent_tokenize(input_text)\par
+words = word_tokenize(input_text.lower())\par
+\par
+# Remove stopwords and punctuation\par
+stop_words = set(stopwords.words("english"))\par
+filtered_words = [word for word in words if word.isalnum() and word not in stop_words]\par
+\par
+# Calculate word frequency\par
+word_freq = defaultdict(int)\par
+for word in filtered_words:\par
+    word_freq[word] += 1\par
+# Calculate sentence scores based on word frequency\par
+sentence_scores = defaultdict(int)\par
+for sentence in sentences:\par
+    for word in word_tokenize(sentence.lower()):\par
+        if word in word_freq:\par
+            sentence_scores[sentence] += word_freq[word]\par
+# Sort sentences by scores and generate summary\par
+sorted_sentences = sorted(sentence_scores, key=sentence_scores.get, reverse=True)\par
+summary_length = min(2, len(sorted_sentences))  # Adjust summary length as needed\par
+summary = ' '.join(sorted_sentences[:summary_length])\par
+print("Extractive Summary:")\par
+print(summary)\par
+\b 13.Implement a Python program that performs rule-based part-of-speech tagging using regular expressions using the following rules. patterns-[(rb(The the)\\b', 'DET), #Matches "The' or 'the' as determiners (rh.cat/dog) b. NOUN), Matches 'cat' or 'dog' as nouns (rb(sjamjare)\\b', VERB'), # Matches 'is," "am,' or 'are' as verbs (rb(quickly brightly)b'. ADV), #Matches 'quickly' or 'brightly as adverbs (rib(?:[A-Za-z]+)\\b', 'NOUN') # Matches any other words as nouns]\par
+\b0 import re\par
+\par
+# Define the POS patterns and their corresponding tags\par
+patterns = [\par
+    (r'\\b(The|the)\\b', 'DET'),  # Matches "The' or 'the' as determiners\par
+    (r'\\b(cat|dog)\\b', 'NOUN'),  # Matches 'cat' or 'dog' as nouns\par
+    (r'\\b(is|am|are)\\b', 'VERB'),  # Matches 'is,' 'am,' or 'are' as verbs\par
+    (r'\\b(quickly|brightly)\\b', 'ADV'),  # Matches 'quickly' or 'brightly' as adverbs\par
+    (r'\\b(?:[A-Za-z]+)\\b', 'NOUN')  # Matches any other words as nouns\par
+]\par
+\par
+def rule_based_pos_tagging(sentence):\par
+    tagged_sentence = []\par
+    for word, tag in patterns:\par
+        regex = re.compile(word)\par
+        matches = regex.findall(sentence)\par
+        for match in matches:\par
+            tagged_sentence.append((match, tag))\par
+    return tagged_sentence\par
+# Example sentence for POS tagging\par
+input_sentence = "The quick brown fox is running quickly."\par
+# Perform rule-based POS tagging on the input sentence\par
+tagged_words = rule_based_pos_tagging(input_sentence)\par
+# Display tagged words with their respective POS tags\par
+print("Rule-Based POS Tagging Result:")\par
+for word, tag in tagged_words:\par
+    print(f"\{word\}: \{tag\}")\par
+\b 14.Develop a Python program that performs Named Entity Recognition (NER) on a given text using popular libraries or models for the sentence "The capital of France is Paris, and it's known for the Eiffel Tower."\par
+\b0 import spacy\par
+# Load the English language model in spacy\par
+nlp = spacy.load("en_core_web_sm")\par
+# Given sentence\par
+input_sentence = "The capital of France is Paris, and it's known for the Eiffel Tower."\par
+# Perform Named Entity Recognition (NER)\par
+doc = nlp(input_sentence)\par
+# Extract named entities and their respective labels\par
+named_entities = [(entity.text, entity.label_) for entity in doc.ents]\par
+# Display named entities and their labels\par
+print("Named Entities:")\par
+for entity, label in named_entities:\par
+    print(f"\{entity\}: \{label\}")\par
+\b 15. Write a Python program that employs the Porter Stemmer algorithm from a Python library to perform word stemming on a list of words. The sample sentences are "Coding with Python is very enjoyable.", "I had a delicious meal at the restaurant.".\par
+\b0 import nltk\par
+from nltk.stem import PorterStemmer\par
+from nltk.tokenize import word_tokenize\par
+\par
+# Download the NLTK resources (if not downloaded)\par
+nltk.download('punkt')\par
+\par
+# Initialize the Porter Stemmer\par
+stemmer = PorterStemmer()\par
+\par
+# Sample sentences\par
+sentences = [\par
+    "Coding with Python is very enjoyable.",\par
+    "I had a delicious meal at the restaurant."\par
+]\par
+# Perform word stemming on each sentence\par
+for sentence in sentences:\par
+    # Tokenize the sentence into words\par
+    words = word_tokenize(sentence)\par
+    # Apply stemming to each word in the sentence\par
+    stemmed_words = [stemmer.stem(word) for word in words]\par
+    # Print the original sentence and stemmed words\par
+    print("Original Sentence:", sentence)\par
+    print("Stemmed Sentence:", ' '.join(stemmed_words))\par
+    print()\par
+\b 16.Create a Python program for sentiment analysis which can be positive, negative, or neutral on a set of text data "I love this product!\~It's\~amazing.".\par
+\b0 from textblob import TextBlob\par
+\par
+# Text data for sentiment analysis\par
+text_data = "I love this product! It's amazing."\par
+\par
+# Perform sentiment analysis using TextBlob\par
+analysis = TextBlob(text_data)\par
+\par
+# Get the polarity score (ranges from -1 to 1 where < 0 indicates negative, > 0 indicates positive, and 0 is neutral)\par
+polarity_score = analysis.sentiment.polarity\par
+\par
+# Interpret the polarity score\par
+if polarity_score > 0:\par
+    sentiment = "Positive"\par
+elif polarity_score < 0:\par
+    sentiment = "Negative"\par
+else:\par
+    sentiment = "Neutral"\par
+\par
+# Print the sentiment analysis result\par
+print(f"Text: \{text_data\}")\par
+print(f"Sentiment: \{sentiment\} (Polarity Score: \{polarity_score\})")\par
+\b 17.Create a Python program to recognize dialog acts in a given dialog or conversation = [\par
+"Hello! How are you today?",\par
+"I'm doing well, thank you. How about you?",\par
+"Can you please pass the salt?",\par
+"Sure, here you go.",\par
+"What time is the meeting tomorrow?",\par
+"The meeting is at 2:00 PM."].\par
+\b0 import nltk\par
+\par
+# Sample conversation\par
+conversation = [\par
+    "Hello! How are you today?",\par
+    "I'm doing well, thank you. How about you?",\par
+    "Can you please pass the salt?",\par
+    "Sure, here you go.",\par
+    "What time is the meeting tomorrow?",\par
+    "The meeting is at 2:00 PM."\par
+]\par
+\par
+# Tokenize each sentence in the conversation\par
+tokenized_sentences = [nltk.word_tokenize(sentence) for sentence in conversation]\par
+\par
+# Perform part-of-speech tagging to identify speech tags\par
+tagged_sentences = [nltk.pos_tag(tokens) for tokens in tokenized_sentences]\par
+# Define dialog act patterns using regular expressions\par
+dialog_act_patterns = [\par
+    (r'^(?=.*\\b(?:hello|hi)\\b).*$', 'GREETING'),\par
+    (r'^.*\\b(how|what)\\b.*$', 'QUESTION'),\par
+    (r'^.*\\b(thank you|thanks)\\b.*$', 'THANKS'),\par
+    (r'^.*\\b(can|could|please)\\b.*$', 'REQUEST'),\par
+    (r'^.*\\b(at|is|am|are|tomorrow|today|go)\\b.*$', 'INFORMATION'),\par
+    (r'^.*\\b(pass|here)\\b.*$', 'OFFERING')\par
+]\par
+# Apply dialog act patterns to recognize dialog acts in each sentence\par
+recognized_dialog_acts = []\par
+for tagged_sentence in tagged_sentences:\par
+    for word, tag in tagged_sentence:\par
+        for pattern, dialog_act in dialog_act_patterns:\par
+            if nltk.re.match(pattern, word, flags=nltk.re.IGNORECASE):\par
+                recognized_dialog_acts.append((word, dialog_act))\par
+                break\par
+# Display recognized dialog acts\par
+print("Recognized Dialog Acts:")\par
+for word, dialog_act in recognized_dialog_acts:\par
+    print(f"'\{word\}' - \{dialog_act\}")\b\par
+18. Implement a Python program that constructs a finite state automaton capable of recognizing dates in a specific format (e.g., DD/MM/YYYY).\par
+\b0 class DateFSA:\par
+    def __init__(self):\par
+        self.states = ['q0', 'q1', 'q2', 'q3', 'q4', 'q5']\par
+        self.accepting_states = \{'q5'\}\par
+        self.transitions = \{\par
+            'q0': \{'0': 'q1', '1': 'q3', '2': 'q3', '3': 'q3'\},\par
+            'q1': \{'0': 'q2', '1': 'q2', '2': 'q2', '3': 'q2', '4': 'q2', '5': 'q2', '6': 'q2', '7': 'q2', '8': 'q2', '9': 'q2'\},\par
+            'q2': \{'/': 'q5'\},\par
+            'q3': \{'0': 'q4', '1': 'q4', '2': 'q4'\},\par
+            'q4': \{'/': 'q5'\},\par
+            'q5': \{\}\par
+        \}\par
+    def is_valid_date(self, date):\par
+        current_state = 'q0'\par
+        for char in date:\par
+            if char in self.transitions[current_state]:\par
+                current_state = self.transitions[current_state][char]\par
+            else:\par
+                return False\par
+        return current_state in self.accepting_states\par
+# Test the DateFSA with sample dates\par
+dates_to_check = ["30/11/2023", "02/05/2021", "10/15/2023", "20/13/2022", "25-12-2021"]\par
+date_fsa = DateFSA()\par
+for date in dates_to_check:\par
+    if date_fsa.is_valid_date(date):\par
+        print(f"The date '\{date\}' is valid in the format DD/MM/YYYY")\par
+    else:\par
+        print(f"The date '\{date\}' is NOT valid in the format DD/MM/YYYY")\par
+}
+ 
